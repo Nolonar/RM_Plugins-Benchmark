@@ -327,9 +327,11 @@
             if (frameTime === null)
                 return "";
 
+            const fps = getFPS(frameTime).toFixed(1);
+            frameTime = frameTime.toFixed(2);
             return parameters.isShowFrameTime ?
-                `${frameTime} ms (${getFPS(frameTime).toFixed(1)} FPS)` :
-                `${getFPS(frameTime).toFixed(1)} FPS`;
+                `${frameTime} ms (${fps} FPS)` :
+                `${fps} FPS`;
         }
 
         getMedian(sortedData) {
