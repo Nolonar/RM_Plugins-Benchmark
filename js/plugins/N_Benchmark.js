@@ -115,6 +115,38 @@
         return ("0".repeat(digitCount) + Math.floor(decimal).clamp(0, 255).toString(16)).substr(-digitCount);
     }
 
+    class Window_BenchmarkInfo extends Window_Base {
+        initialize(scene) {
+            const rect = new Rectangle(0, 0, 360, this.fittingHeight(1));
+            super.initialize(rect);
+
+            this.opacity = 0;
+            scene.addWindow(this);
+
+            this.endTime = new Date(new Date().getTime() + parameters.durationMs);
+        }
+
+        get timeLeft() {
+            return Math.max(this.endTime.getTime() - new Date().getTime(), 0);
+        }
+
+        update() {
+            super.update();
+            this.drawContent();
+        }
+
+        drawContent() {
+            this.contents.clear();
+            let width = this.contentsWidth();
+            this.drawBackground(0, 0, width, this.lineHeight());
+            this.drawText(`${this.timeLeft} ms`, 0, 0, width, 'left');
+        }
+
+        drawBackground(x, y, width, height) {
+            Window_MapName.prototype.drawBackground.call(this, x, y, width, height);
+        }
+    }
+
     class Window_BenchmarkGraph extends Window_Base {
         initialize(scene) {
             super.initialize(new Rectangle(0, 0, Graphics.width, Math.floor(Graphics.height / 2)));
@@ -355,8 +387,12 @@
 
         startBenchmark() {
             isBenchmarking = true;
+            const windowInfo = new Window_BenchmarkInfo(this);
+            windowInfo.show();
+
             setTimeout(() => {
                 isBenchmarking = false;
+                windowInfo.hide();
                 new Window_BenchmarkGraph(this).show();
                 new Window_BenchmarkStatistics(this).show();
             }, parameters.durationMs);
