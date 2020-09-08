@@ -81,7 +81,7 @@
     const TEXT_BENCHMARK = "Benchmark";
     const SYMBOL_BENCHMARK = "benchmark";
 
-    let parameters = PluginManager.parameters(PLUGIN_NAME);
+    const parameters = PluginManager.parameters(PLUGIN_NAME);
     parameters.mapId = Number(parameters.mapId) || 1;
     parameters.x = Number(parameters.x) || 1;
     parameters.y = Number(parameters.y) || 1;
@@ -89,7 +89,7 @@
     parameters.isShowFrameTime = parameters.isShowFrameTime !== "false";
     parameters.isDevOnly = parameters.isDevOnly !== "false";
 
-    let frameTimes = [];
+    const frameTimes = [];
 
     function getFPS(frameTime) {
         return 1000 / frameTime;
@@ -121,7 +121,7 @@
             super.initialize(rect);
 
             this.opacity = 0;
-            scene.addWindow(this);
+            scene.addChild(this);
 
             this.endTime = new Date(new Date().getTime() + parameters.durationMs);
         }
@@ -386,6 +386,7 @@
         }
 
         startBenchmark() {
+            frameTimes.length = 0; // Clear frametimes before next run.
             isBenchmarking = true;
             const windowInfo = new Window_BenchmarkInfo(this);
             windowInfo.show();
