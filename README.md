@@ -16,9 +16,9 @@ Adds a benchmark option to the game.
     - Red: < 20 FPS
 - Players can return to the title screen at any time by pressing "OK" or "Cancel" or clicking anywhere in the game.
 
-| Project     | Latest release   |
-| ----------- | ---------------- |
-| N_Benchmark | [1.0.0][release] |
+| Project     | Latest release      |
+| ----------- | ------------------- |
+| N_Benchmark | [Download][release] |
 
 [All RPG Maker plugins by Nolonar][hub]
 
