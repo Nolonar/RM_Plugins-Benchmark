@@ -121,7 +121,7 @@
  * @desc Scripted mode only. Stops the benchmark and shows the results.
  *
  *
- * @help Version 1.1.0
+ * @help Version 1.1.1
  */
 
 (() => {
@@ -523,16 +523,8 @@
     Scene_Title.prototype.createCommandWindow = function () {
         Scene_Title_createCommandWindow.call(this);
         this._commandWindow.setHandler(SYMBOL_BENCHMARK, function () {
-            DataManager.setupNewGame();
-
-            // Inject benchmark map coordinates.
-            const mapId = parameters.mapId;
-            const x = parameters.x;
-            const y = parameters.y;
-            $gamePlayer.reserveTransfer(mapId, x, y, 2, 0);
-
-            this._commandWindow.close();
-            this.fadeOutAll();
+            this.commandNewGame.call(this);
+            $gamePlayer.reserveTransfer(parameters.mapId, parameters.x, parameters.y, 2, 0);
             SceneManager.goto(Scene_Benchmark);
         }.bind(this));
     }
