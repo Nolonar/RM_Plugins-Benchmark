@@ -503,20 +503,6 @@
                 this.commandToTitle();
         }
 
-        updateMain() {
-            if (!this._isExiting) {
-                $gameMap.update(this.isActive());
-                $gamePlayer.update(this.isPlayerActive());
-            }
-            $gameTimer.update(this.isActive());
-            $gameScreen.update();
-        }
-
-        updateChildren() {
-            if (!this._isExiting)
-                super.updateChildren();
-        }
-
         isTriggered() {
             return Input.isRepeated("ok")
                 || Input.isRepeated("cancel")
