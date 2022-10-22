@@ -121,7 +121,7 @@
  * @desc Scripted mode only. Stops the benchmark and shows the results.
  *
  *
- * @help Version 1.1.1
+ * @help Version 1.1.2
  */
 
 (() => {
@@ -205,7 +205,7 @@
 
         drawContent() {
             this.contents.clear();
-            let width = this.contentsWidth();
+            const width = this.contentsWidth();
             this.drawBackground(0, 0, width, this.lineHeight());
             const parts = [parameters.textRunning];
             if (parameters.mode === OPTION_MODE_TIMED)
@@ -230,7 +230,7 @@
         }
 
         get graphData() {
-            let x = [], y = [];
+            const x = [], y = [];
             for (const frameTime of [...frameTimes].sort()) {
                 const t = Number(frameTime.toFixed(1));
                 if (x.length && x.slice(-1)[0] === t) {
@@ -454,6 +454,12 @@
 
     let isBenchmarkRunning = false;
     class Scene_Benchmark extends Scene_Map {
+        initialize() {
+            super.initialize();
+
+            this._isExiting = false;
+        }
+
         start() {
             super.start();
             this.startBenchmark();
@@ -481,11 +487,11 @@
             new Window_BenchmarkStatistics(this).show();
         }
 
-        createButtons() { /* Do not create buttons on benchmark */ }
         isMenuEnabled() { return false; }
         isAutosaveEnabled() { return false; }
 
         commandToTitle() {
+            this._isExiting = true;
             isBenchmarkRunning = false;
             $gameSwitches.setValue(parameters.switchId, false);
             Scene_GameEnd.prototype.commandToTitle.call(this);
@@ -493,8 +499,22 @@
 
         update() {
             super.update();
-            if (this.isTriggered())
+            if (!this._isExiting && this.isTriggered())
                 this.commandToTitle();
+        }
+
+        updateMain() {
+            if (!this._isExiting) {
+                $gameMap.update(this.isActive());
+                $gamePlayer.update(this.isPlayerActive());
+            }
+            $gameTimer.update(this.isActive());
+            $gameScreen.update();
+        }
+
+        updateChildren() {
+            if (!this._isExiting)
+                super.updateChildren();
         }
 
         isTriggered() {
@@ -504,7 +524,7 @@
         }
     }
 
-    let FPSCounter_endTick = Graphics.FPSCounter.prototype.endTick;
+    const FPSCounter_endTick = Graphics.FPSCounter.prototype.endTick;
     Graphics.FPSCounter.prototype.endTick = function () {
         FPSCounter_endTick.call(this);
 
@@ -512,14 +532,14 @@
             frameTimes.push(this._frameTime);
     }
 
-    let Window_TitleCommand_makeCommandList = Window_TitleCommand.prototype.makeCommandList;
+    const Window_TitleCommand_makeCommandList = Window_TitleCommand.prototype.makeCommandList;
     Window_TitleCommand.prototype.makeCommandList = function () {
         Window_TitleCommand_makeCommandList.call(this);
         if ($gameTemp.isPlaytest() || !parameters.isDevOnly)
             this.addCommand(parameters.textBenchmark, SYMBOL_BENCHMARK);
     }
 
-    let Scene_Title_createCommandWindow = Scene_Title.prototype.createCommandWindow;
+    const Scene_Title_createCommandWindow = Scene_Title.prototype.createCommandWindow;
     Scene_Title.prototype.createCommandWindow = function () {
         Scene_Title_createCommandWindow.call(this);
         this._commandWindow.setHandler(SYMBOL_BENCHMARK, function () {
@@ -529,7 +549,7 @@
         }.bind(this));
     }
 
-    let Game_Player_canMove = Game_Player.prototype.canMove;
+    const Game_Player_canMove = Game_Player.prototype.canMove;
     Game_Player.prototype.canMove = function () {
         return !(SceneManager._scene instanceof Scene_Benchmark)
             && Game_Player_canMove.call(this);
