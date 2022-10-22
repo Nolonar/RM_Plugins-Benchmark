@@ -493,7 +493,7 @@
         commandToTitle() {
             this._isExiting = true;
             isBenchmarkRunning = false;
-            $gameSwitches.setValue(parameters.switchId, false);
+
             Scene_GameEnd.prototype.commandToTitle.call(this);
         }
 
